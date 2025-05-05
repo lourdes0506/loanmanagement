@@ -1,0 +1,122 @@
+mysql> create database loanManagementSystem;
+Query OK, 1 row affected (0.06 sec)
+
+
+mysql> use loanManagementSystem;
+Database changed
+mysql> create table Customer(
+    -> customer_id     INT         AUTO_INCREMENT PRIMARY KEY,
+    ->   name            VARCHAR(100) NOT NULL,
+    ->   email_address   VARCHAR(150) NOT NULL UNIQUE,
+    ->   phone_number    VARCHAR(20)  NOT NULL,
+    ->   address         VARCHAR(255) NOT NULL,
+    ->   credit_score    VARCHAR(10)  NOT NULL,
+    ->   created_at      DATETIME     DEFAULT CURRENT_TIMESTAMP
+    -> );
+Query OK, 0 rows affected (0.20 sec)
+
+
+
+
+
+
+
+mysql> Create table Loan(  loan_id         INT           AUTO_INCREMENT PRIMARY KEY,
+    ->   customer_id     INT           NOT NULL,
+    ->   principal_amt   DECIMAL(12,2) NOT NULL,
+    ->   interest_rate   DECIMAL(5,2)  NOT NULL COMMENT 'Annual % rate',
+    ->   loan_term       INT           NOT NULL COMMENT 'Term in months',
+    ->   loan_type       VARCHAR(50)   NOT NULL,
+    ->   loan_status     VARCHAR(20)   NOT NULL,
+    ->   created_at      DATETIME      DEFAULT CURRENT_TIMESTAMP,
+    ->   FOREIGN KEY (customer_id) REFERENCES Customer(customer_id));
+Query OK, 0 rows affected (0.09 sec)
+
+
+
+
+
+mysql> create table CarLoan(
+    ->   loan_id    INT           PRIMARY KEY,
+    ->   car_model  VARCHAR(100)  NOT NULL,
+    ->   car_value  DECIMAL(12,2) NOT NULL,
+    ->   FOREIGN KEY (loan_id) REFERENCES Loan(loan_id));
+Query OK, 0 rows affected (0.05 sec)
+
+
+
+mysql> create table HomeLoan(  loan_id           INT           PRIMARY KEY,
+    ->   property_address  VARCHAR(255)  NOT NULL,
+    ->   property_value    DECIMAL(12,2) NOT NULL,
+    ->   FOREIGN KEY (loan_id) REFERENCES Loan(loan_id));
+Query OK, 0 rows affected (0.05 sec)
+
+
+mysql> INSERT INTO customer
+    ->   (customer_id, name, email_address, phone_number, address, credit_score)
+    -> VALUES
+    ->   (1, 'William', 'william@example.com', '9810123456', '123, MG Road, Bengaluru, KA', '750'),
+    ->   (2, 'Chandru', 'chandru@example.com', '9920345678', '56, Park Street, Kolkata, WB', '680'),
+    ->   (3, 'Indhra',  'indhra@example.com',  '9876543210', '78, Paldi, Ahmedabad, GJ',   '710'),
+    ->   (4, 'Chitesh', 'chitesh@example.com', '9445123789', '12, Marine Drive, Kochi, KL', '780'),
+    ->   (5, 'Iniyan',  'iniyan@example.com',  '9001234567', '34, Connaught Place, Delhi, DL','695');
+Query OK, 5 rows affected (0.02 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+
+mysql> Insert Into Loan (customer_id, principal_amt, interest_rate, loan_term, loan_type, loan_status) VALUES
+    ->   (1, 500000.00, 8.50, 60, 'Home Loan',     'Approved'),
+    ->   (2, 200000.00, 10.00, 36, 'Personal Loan', 'Pending'),
+    ->   (3, 150000.00, 9.25, 48, 'Education Loan', 'Approved'),
+    ->   (4, 300000.00, 7.75, 72, 'Home Loan',      'Closed'),
+    ->   (5, 100000.00, 12.00, 24, 'Personal Loan', 'Approved');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+
+
+mysql> insert into CarLoan(loan_id, car_model, car_value) VALUES
+    -> (11, 'Maruti Suzuki Swift', 850000.00),
+    -> (12, 'Hyundai Creta',       950000.00);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+
+ insert into HomeLoan (loan_id, property_address, property_value) VALUES
+    -> (13, '45, Lake View Apartments, Whitefield, Bengaluru, KA', 3000000.00),
+    -> (14, '78, Lake View Apartments, Marine Drive, Kochi, KL', 5000000.00);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+
+mysql> Select * from HomeLoan;
++---------+-----------------------------------------------------+----------------+
+| loan_id | property_address                                    | property_value |
++---------+-----------------------------------------------------+----------------+
+|      13 | 45, Lake View Apartments, Whitefield, Bengaluru, KA |     3000000.00 |
+|      14 | 78, Lake View Apartments, Marine Drive, Kochi, KL   |     5000000.00 |
++---------+-----------------------------------------------------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> Select * from CarLoan;
++---------+---------------------+-----------+
+| loan_id | car_model           | car_value |
++---------+---------------------+-----------+
+|      11 | Maruti Suzuki Swift | 850000.00 |
+|      12 | Hyundai Creta       | 950000.00 |
++---------+---------------------+-----------+
+2 rows in set (0.00 sec)
+
+
+
+mysql> select * from Customer;
++-------------+---------+---------------------+--------------+--------------------------------+--------------+---------------------+
+| customer_id | name    | email_address       | phone_number | address                        | credit_score | created_at          |
++-------------+---------+---------------------+--------------+--------------------------------+--------------+---------------------+
+|           1 | William | william@example.com | 9810123456   | 123, MG Road, Bengaluru, KA    | 750          | 2025-05-05 11:11:39 |
+|           2 | Chandru | chandru@example.com | 9920345678   | 56, Park Street, Kolkata, WB   | 680          | 2025-05-05 11:11:39 |
+|           3 | Indhra  | indhra@example.com  | 9876543210   | 78, Paldi, Ahmedabad, GJ       | 710          | 2025-05-05 11:11:39 |
+|           4 | Chitesh | chitesh@example.com | 9445123789   | 12, Marine Drive, Kochi, KL    | 780          | 2025-05-05 11:11:39 |
+|           5 | Iniyan  | iniyan@example.com  | 9001234567   | 34, Connaught Place, Delhi, DL | 695          | 2025-05-05 11:11:39 |
++-------------+---------+---------------------+--------------+--------------------------------+--------------+---------------------+
+5 rows in set (0.00 sec)
